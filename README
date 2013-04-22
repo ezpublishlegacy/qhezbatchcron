@@ -1,4 +1,4 @@
-eZ Publish cronjob runner
+QH eZ Publish Batch Cron
 ===========================
 
 If you have multiple sites running on eZ Publish, your crontab configuration can get really big. This CLI script allows more compact crontab by configuring all your websites in a config file.
