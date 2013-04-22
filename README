@@ -6,3 +6,31 @@ If you have multiple sites running on eZ Publish, your crontab configuration can
 You can define common commands to be ran, each website can add extra command or skip one ore more common ones.
 
 You can define the same or several different user to sudo to before running the commands, recent eZ Publish don't allow the root user to run some scripts.
+
+Then to setup your crontab:
+# eZ Publish websites maintenance cronjobs
+##########################################
+SCRIPTROOT=/var/lib/ezpublish/cronjobs/
+
+# Location of the PHP Command Line Interface binary.
+PHP=/usr/bin/php
+
+# Instruct cron to run the main set of cronjobs
+# every day
+35 6 * * * cd $SCRIPTROOT && $PHP runezcronjobs.php generic 2>&1
+05 4 * * * cd $SCRIPTROOT && $PHP runezcronjobs.php expired_session 2>&1
+
+# Instruct cron to run the "infrequent" set of cronjobs
+# every Monday
+20 5 * * 1 cd $SCRIPTROOT && $PHP runezcronjobs.php infrequent 2>&1
+
+# Re-launch precompile script every week
+20 5 * * 6 cd $SCRIPTROOT && $PHP runezcronjobs.php eztc 2>&1
+
+# Instruct cron to run the "frequent" set of cronjobs
+# every 15 minutes
+0,15,30,45 * * * * cd $SCRIPTROOT && $PHP runezcronjobs.php frequent 2>&1
+
+# eZ Flow cronjobs
+*/10 * * * * cd $SCRIPTROOT && $PHP runezcronjobs.php ezflow 2>&1
+*/10 * * * * cd $SCRIPTROOT && $PHP runezcronjobs.php runscheduledscripts 2>&1
