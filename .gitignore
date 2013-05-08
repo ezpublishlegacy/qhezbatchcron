@@ -1,1 +1,2 @@
-config.ini
+settings/config.ini
+settings/sites/*.ini

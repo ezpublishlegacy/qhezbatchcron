@@ -5,13 +5,37 @@ include ('iniStruct.class.php');
  * Class eZCronjob
  */
 class eZCronjob
-{
+{	
     /**
      * Constructor. Load INI config file
      */
-    public function __construct( )
+    public function __construct( $quiet = false )
     {
-        $this->ini = INIStruct::parse( 'config.ini', true );
+    	$this->_quiet = $quiet;
+        $this->ini = INIStruct::parse( "{$this->_iniDir}/config.ini", true );
+		
+		$iniSitesDir = "{$this->_iniDir}/{$this->_iniSitesDir}";
+		if( is_dir( $iniSitesDir ) ) {
+			if( $dh = opendir( $iniSitesDir ) ) {
+				while( ( $file = readdir( $dh ) ) !== false) {
+					if( preg_match( "|\.ini$|", $file ) ) {
+						$subINIFile = "{$iniSitesDir}/{$file}";
+						if( !$this->_quiet ) {
+							echo "Loading sub INI: {$subINIFile}\n";
+						}
+						
+						$subINI = INIStruct::parse( $subINIFile, true );
+						
+						if( is_array( $subINI ) ) {
+							$this->ini = array_merge_recursive( $this->ini, $subINI );
+						}
+					}
+				}
+				
+				closedir($dh);
+			}
+		}
+
         $this->php = $this->ini['ScriptSettings']['PHP'];
 
         if ( empty( $this->php ) )
@@ -76,7 +100,9 @@ class eZCronjob
     {
         if ( array_key_exists( 'IgnoreCommands', $this->ini[$siteID] ) && in_array( $type, $this->ini[$siteID]['IgnoreCommands'] ) )
         {
-            echo "Skipping command {$type}\n";
+        	if( !$this->_quiet ) {
+            	echo "Skipping command {$type}\n";
+			}
             return false;
         }
 
@@ -102,7 +128,9 @@ class eZCronjob
 
         if ( file_exists( $path ) )
         {
-            echo "{$path}\n";
+        	if( !$this->_quiet ) {
+            	echo "{$path}\n";
+			}
             chdir( $path );
 
             $command = $this->generateCommand( '--SITEACCESS--', $siteaccess, $jobCommand );
@@ -110,7 +138,9 @@ class eZCronjob
             if( !empty( $sudo ) )
             	$command = "sudo -u {$sudo} {$command}";
             	
-            echo "{$command}\n";
+			if( !$this->_quiet ) {
+            	echo "{$command}\n";
+			}
 
             system( $command );
         }
@@ -149,14 +179,18 @@ class eZCronjob
         {
             if ( array_key_exists( $siteID, $this->ini ) )
             {
-                echo "BEGIN {$siteID}\n";
+            	if( !$this->_quiet ) {
+                	echo "BEGIN {$siteID}\n";
+				}
 
                 if ( empty( $jobType ) )
                     $this->runAllJobs( $siteID );
                 else
                     $this->runJob( $jobType, $siteID );
 
-                echo "END\n\n";
+                if( !$this->_quiet ) {
+                	echo "END\n\n";
+				}
             }
             else
             {
@@ -165,7 +199,10 @@ class eZCronjob
         }
     }
 
-    public $ini;
+    public $ini = array();
+	protected $_quiet = false;
+	protected $_iniDir = "settings";
+	protected $_iniSitesDir = "sites";
     protected $php;
     protected $jobCommands;
 }

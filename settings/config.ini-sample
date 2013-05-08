@@ -1,0 +1,12 @@
+[ScriptSettings]
+PHP =  /usr/bin/php
+
+; Global settings
+[CronjobSettings]
+Commands.generic =  "--PHP-- runcronjobs.php -s --SITEACCESS-- -q 2>&1"
+Commands.expired_session =  "--PHP-- update/common/scripts/cleanup.php expired_session -s --SITEACCESS-- -q 2>&1"
+Commands.infrequent =  "--PHP-- runcronjobs.php -s --SITEACCESS-- infrequent -q 2>&1"
+Commands.frequent =  "--PHP-- runcronjobs.php -s --SITEACCESS-- frequent -q 2>&1"
+Commands.ezflow =  "--PHP-- runcronjobs.php -s --SITEACCESS-- ezflow -q 2>&1"
+Commands.runscheduledscripts =  "--PHP-- runcronjobs.php -s --SITEACCESS-- runscheduledscripts -q 2>&1"
+Commands.eztc =  "--PHP-- bin/php/eztc.php -s --SITEACCESS-- -q 2>&1"

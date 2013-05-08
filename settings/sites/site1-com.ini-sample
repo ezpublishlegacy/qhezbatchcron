@@ -1,0 +1,19 @@
+[CronjobSettings]
+; Enabling the settings for the site
+AvailableSites[]=site1
+
+; Site specific settings
+;--------------------------------------------------------
+[site1]
+SiteAccess = site
+Path = /var/www/site1.com/web/
+
+; Additional command to run for this website
+Commands.ls = "ls -l"
+
+ For this website, list of common commands to skip
+IgnoreCommands[] = runscheduledscripts
+IgnoreCommands[] = ezflow
+
+; If set, will sudo -u this user for running the ez cron script
+Sudo = web16

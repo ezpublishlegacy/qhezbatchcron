@@ -1,4 +1,6 @@
 ; Please rename this file to config.ini and customize it
+; This sample file is to demonstrate a single INI file
+; instead of splitting into sub files inside settings/sites/
 ;--------------------------------------------------------
 
 ; Script settings
@@ -28,7 +30,7 @@ SiteAccess = eng
 Path = /var/www/sites/site1/html
 
 ; Additional command to run for this website
-Commands.ls = "ls-l"
+Commands.ls = "ls -l"
 
 ; For this website, list of common commands to skip
 IgnoreCommands[]=runscheduledscripts

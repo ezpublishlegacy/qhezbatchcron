@@ -1,0 +1,9 @@
+[CronjobSettings]
+AvailableSites[]=site2
+
+[site2]
+SiteAccess = site
+Path = /var/www/site2.com/web/
+IgnoreCommands[] = runscheduledscripts
+IgnoreCommands[] = ezflow
+Sudo = web3
